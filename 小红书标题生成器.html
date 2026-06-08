@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小红书爆款标题生成器</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+    background: linear-gradient(135deg, #ffeef1, #f7f7f7);
+    transition: 0.3s;
+}
+
+.container {
+    max-width: 720px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+h1 {
+    text-align: center;
+    color: #ff2442;
+}
+
+input, select {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #ff2442;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.copy-all { background: #333; }
+.export-btn { background: #007aff; }
+.theme-btn { background: #555; }
+
+.results { margin-top: 25px; }
+
+.card {
+    background: #fff0f3;
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    position: relative;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.copy-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: #ff2442;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.info {
+    margin-top: 30px;
+    padding: 15px;
+    background: #fafafa;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* 🌙 深色模式 */
+body.dark {
+    background: #1c1c1e;
+}
+
+body.dark .container {
+    background: #2c2c2e;
+    color: #fff;
+}
+
+body.dark input, body.dark select {
+    background: #3a3a3c;
+    color: #fff;
+    border: none;
+}
+
+body.dark .card {
+    background: #3a3a3c;
+}
+
+body.dark .info {
+    background: #3a3a3c;
+    color: #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🔥 小红书爆款标题生成器</h1>
+
+    <input id="topic" placeholder="输入主题，如：副业 / 减肥 / 护肤">
+
+    <select id="style">
+        <option value="money">搞钱副业 💰</option>
+        <option value="career">职场成长 🧠</option>
+        <option value="love">情感关系 ❤️</option>
+        <option value="grow">自我提升 🚀</option>
+        <option value="fitness">减肥健身 🏋️</option>
+        <option value="beauty">护肤美妆 💄</option>
+        <option value="fashion">穿搭时尚 👗</option>
+        <option value="study">学习考试 📚</option>
+        <option value="life">生活方式 🌿</option>
+        <option value="general">通用爆款 🔥</option>
+    </select>
+
+    <div class="buttons">
+        <button onclick="generate()">生成标题</button>
+        <button class="copy-all" onclick="copyAll()">复制</button>
+        <button class="export-btn" onclick="exportTXT()">导出TXT</button>
+        <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div id="results" class="results"></div>
+
+    <div class="info">
+        <h3>📌 工具说明</h3>
+        <p>
+        本工具通过“关键词 + 情绪词 + 结构模板”组合生成小红书风格标题，
+        并通过随机算法提升多样性与真实感。
+        </p>
+
+        <h3>⚙️ 技术说明</h3>
+        <p>
+        使用 HTML、CSS、JavaScript 实现，涉及随机算法（Math.random）、
+        去重机制（Set）、DOM操作、本地存储（localStorage）、
+        文件导出及深色模式切换等技术。
+        </p>
+    </div>
+
+</div>
+
+<script>
+
+const emojis = ["🔥","😭","绝了","离谱","救命"];
+const tones = ["说真的","我一开始也不信","不是夸张","求你了"];
+const emotions = ["建议收藏","我真的后悔了","太真实了","我直接崩溃"];
+
+function random(arr){
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function getTags(topic){
+    return `#${topic} #干货 #经验分享`;
+}
+
+function generate(){
+
+    const topic = document.getElementById("topic").value.trim();
+    const results = document.getElementById("results");
+
+    if(!topic){
+        alert("请输入主题");
+        return;
+    }
+
+    results.innerHTML = "生成中...";
+
+    let titles = new Set();
+
+    while(titles.size < 20){
+        titles.add(`${random(emojis)} ${random(tones)}…${topic} ${random(emotions)} ${getTags(topic)}`);
+    }
+
+    let html = "";
+    Array.from(titles).forEach((t,i)=>{
+        html += `
+        <div class="card">
+            ${i+1}. ${t}
+            <button class="copy-btn" onclick="copyText(this)">复制</button>
+        </div>`;
+    });
+
+    results.innerHTML = html;
+
+    results.scrollIntoView({behavior:"smooth"});
+
+    localStorage.setItem("titles", JSON.stringify(Array.from(titles)));
+}
+
+function copyText(btn){
+    const text = btn.parentElement.innerText.replace("复制","");
+    navigator.clipboard.writeText(text);
+    btn.innerText="已复制";
+    setTimeout(()=>btn.innerText="复制",1000);
+}
+
+function copyAll(){
+    const text = document.getElementById("results").innerText;
+    navigator.clipboard.writeText(text);
+    alert("已复制");
+}
+
+function exportTXT(){
+    const data = localStorage.getItem("titles");
+    if(!data){
+        alert("请先生成标题");
+        return;
+    }
+
+    const blob = new Blob([JSON.parse(data).join("\n")]);
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "titles.txt";
+    a.click();
+}
+
+function toggleTheme(){
+    document.body.classList.toggle("dark");
+    localStorage.setItem("theme", document.body.classList.contains("dark"));
+}
+
+window.onload = function(){
+    if(localStorage.getItem("theme") === "true"){
+        document.body.classList.add("dark");
+    }
+
+    const data = localStorage.getItem("titles");
+    if(data){
+        const titles = JSON.parse(data);
+        let html="";
+        titles.forEach((t,i)=>{
+            html += `<div class="card">${i+1}. ${t}</div>`;
+        });
+        document.getElementById("results").innerHTML = html;
+    }
+}
+
+</script>
+
+</body>
+</html>
